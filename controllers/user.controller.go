@@ -56,13 +56,14 @@ func (uc *UserController) GetProductDetailsByID(ctx *gin.Context) {
 	idres, err := uc.UserService.GetProductDetailsByID(&id)
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
+		return
 	}
 	ctx.JSON(http.StatusOK, idres)
 }
 
 func (uc *UserController) GetProductsByRating(ctx *gin.Context) {
 	ratingStr := ctx.Param("rating")
-	rating, err := strconv.Atoi(ratingStr)
+	rating, err := strconv.ParseFloat(ratingStr, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Rating"})
 		return
@@ -70,6 +71,7 @@ func (uc *UserController) GetProductsByRating(ctx *gin.Context) {
 	res, err := uc.UserService.GetProductsByRating(&rating)
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
+		return
 	}
 	ctx.JSON(http.StatusOK, res)
 }

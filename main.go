@@ -18,14 +18,15 @@ var (
 	userservice    services.UserService
 	usercontroller controllers.UserController
 	ctx            context.Context
-	usercollection *mongo.Collection
+	productInfo    *mongo.Collection
 	mongoclient    *mongo.Client
 	err            error
 )
 
 func init() {
 	ctx = context.TODO()
-	mongoconn := options.Client().ApplyURI("mongodb://localhost:27017")
+	const connectionstr = "mongodb+srv://krati27mishra:<password>@cluster0.yzillcr.mongodb.net/?retryWrites=true&w=majority"
+	mongoconn := options.Client().ApplyURI(connectionstr)
 	mongoclient, err = mongo.Connect(ctx, mongoconn)
 	if err != nil {
 		log.Fatal(err)
@@ -35,8 +36,8 @@ func init() {
 		log.Fatal(err)
 	}
 	fmt.Println("mongo connection established")
-	usercollection = mongoclient.Database("userdb").Collection("users")
-	userservice = services.NewUserService(usercollection, ctx)
+	productInfo = mongoclient.Database("products").Collection("productDetails")
+	userservice = services.NewUserService(productInfo, ctx)
 	usercontroller = controllers.New(userservice)
 	server = gin.Default()
 
